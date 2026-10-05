@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>SmartWorld — Admin produits</title>
+<link rel="icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--indigo:#2f4aa0;--blue:#2d6fd9;--ink:#141a33;--muted:#66708a;--line:#e4e8f2;--bg:#f4f6fb;--green:#1fa855;--red:#d64545}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+  button{font:inherit;cursor:pointer}
+  .wrap{max-width:760px;margin:0 auto;padding:16px}
+  .box{background:#fff;border-radius:18px;padding:20px;box-shadow:0 2px 10px rgba(20,30,70,.06)}
+  h1{font-size:20px;margin:0}
+  label{display:block;font-size:14px;font-weight:600;margin:14px 0 6px}
+  input,select,textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:16px;color:var(--ink);background:#fff;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--blue)}
+  textarea{min-height:110px;resize:vertical}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .btn{border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:var(--indigo);color:#fff}
+  .btn.light{background:#eef1f8;color:var(--ink)}
+  .btn.red{background:#fdeaea;color:var(--red)}
+  .btn.full{width:100%;margin-top:18px;padding:14px}
+  .btn:disabled{opacity:.6}
+  .msg{font-size:14px;margin-top:10px;min-height:20px}
+  .msg.err{color:var(--red)} .msg.ok{color:var(--green)}
+
+  #login{max-width:400px;margin:40px auto}
+  #login img{display:block;height:70px;margin:0 auto 10px}
+
+  .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .head img{height:42px}
+  .head .sp{flex:1}
+  .head a{font-size:14px;color:var(--blue);font-weight:600;text-decoration:none}
+
+  .item{display:flex;gap:12px;align-items:center;background:#fff;border-radius:16px;padding:10px;margin-bottom:10px;box-shadow:0 1px 6px rgba(20,30,70,.05)}
+  .item.off{opacity:.55}
+  .item img{width:64px;height:64px;border-radius:10px;object-fit:cover;background:#eef1f8;flex:none}
+  .item .t{flex:1;min-width:0}
+  .item .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .item .t span{font-size:13px;color:var(--muted)}
+  .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .acts button{border:0;background:#eef1f8;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:600}
+  .acts .del{color:var(--red);background:#fdeaea}
+  @media(max-width:560px){.item{flex-wrap:wrap}.acts{width:100%;justify-content:flex-start}}
+  .empty{text-align:center;color:var(--muted);padding:30px}
+
+  .ov{position:fixed;inset:0;background:rgba(10,15,35,.5);display:none;align-items:flex-end;justify-content:center;z-index:20}
+  .ov.open{display:flex}
+  .sheet{background:#fff;width:100%;max-width:560px;max-height:94vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+  @media(min-width:640px){.ov{align-items:center}.sheet{border-radius:22px}}
+  .sheet .x{float:right;border:0;background:#eef1f8;width:36px;height:36px;border-radius:50%}
+  .photo{display:flex;gap:12px;align-items:center}
+  .photo img{width:96px;height:96px;border-radius:12px;object-fit:cover;background:#eef1f8;flex:none}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .check{display:flex;align-items:center;gap:8px;margin-top:14px;font-weight:600;font-size:14px}
+  .check input{width:20px;height:20px}
+</style>
+</head>
+<body>
+
+<!-- Connexion -->
+<div id="login" class="wrap" hidden>
+  <div class="box">
+    <img src="/logo.png" alt="SmartWorld">
+    <h1 style="text-align:center">Espace admin</h1>
+    <form id="loginForm">
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="pass">Mot de passe</label>
+      <input id="pass" type="password" autocomplete="current-password" required>
+      <button class="btn full" type="submit">Se connecter</button>
+      <div class="msg" id="loginMsg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Tableau de bord -->
+<div id="app" class="wrap" hidden>
+  <div class="head">
+    <img src="/logo.png" alt="">
+    <h1>Mes produits</h1>
+    <span class="sp"></span>
+    <a href="/" target="_blank">Voir le site ↗</a>
+    <button class="btn light" id="logout">Déconnexion</button>
+  </div>
+  <button class="btn" id="addBtn" style="width:100%;margin-bottom:14px;padding:14px">+ Ajouter un produit</button>
+  <div class="msg" id="listMsg"></div>
+  <div id="list"></div>
+</div>
+
+<!-- Formulaire produit -->
+<div class="ov" id="ov">
+  <form class="sheet" id="form">
+    <button class="x" type="button" id="closeForm" aria-label="Fermer">✕</button>
+    <h1 id="formTitle">Nouveau produit</h1>
+
+    <label>Photo</label>
+    <div class="photo">
+      <img id="preview" src="/logo.png" alt="">
+      <div style="flex:1">
+        <input id="file" type="file" accept="image/*">
+        <div class="hint">La photo est réduite automatiquement pour charger vite.</div>
+      </div>
+    </div>
+
+    <label for="f-name">Nom du produit *</label>
+    <input id="f-name" required placeholder="Ex : HP EliteBook 840 G6">
+
+    <div class="row2">
+      <div>
+        <label for="f-cat">Catégorie</label>
+        <select id="f-cat">
+          <option value="pc">Ordinateur</option>
+          <option value="telephone">Téléphone</option>
+          <option value="accessoire">Accessoire</option>
+        </select>
+      </div>
+      <div>
+        <label for="f-price">Prix (F CFA)</label>
+        <input id="f-price" type="number" inputmode="numeric" min="0" step="500" placeholder="170000">
+      </div>
+    </div>
+
+    <label for="f-cond">État</label>
+    <input id="f-cond" list="conds" placeholder="Ex : Importé – Très bon état">
+    <datalist id="conds">
+      <option value="Neuf"><option value="Importé – Très bon état"><option value="Importé – Bon état"><option value="Occasion – Très bon état">
+    </datalist>
+
+    <label for="f-specs">Caractéristiques</label>
+    <textarea id="f-specs" placeholder="Une par ligne :&#10;Intel Core i7 – 8e génération&#10;8 Go RAM&#10;SSD 256 Go&#10;Écran 14 pouces"></textarea>
+    <div class="hint">Une caractéristique par ligne.</div>
+
+    <label class="check"><input type="checkbox" id="f-active" checked> Visible sur le site</label>
+
+    <button class="btn full" type="submit" id="saveBtn">Enregistrer</button>
+    <div class="msg" id="formMsg"></div>
+  </form>
+</div>
+
+<script type="module">
+import CONFIG from "./config.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => n == null ? "Prix sur demande" : new Intl.NumberFormat("fr-FR").format(n).replace(/\s/g, " ") + " F";
+const CAT = { pc: "Ordinateur", telephone: "Téléphone", accessoire: "Accessoire" };
+
+if (CONFIG.SUPABASE_URL.includes("VOTRE")) {
+  document.body.innerHTML = '<div class="wrap"><div class="box" style="margin-top:40px">⚠️ Configurez d\'abord <b>config.js</b> (adresse et clé Supabase). Voir le GUIDE.</div></div>';
+  throw new Error("config manquante");
+}
+const sb = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+let products = [], editing = null, newFile = null;
+
+function setMsg(el, text, type = "") { el.textContent = text; el.className = "msg " + type; }
+
+// ---------- Connexion ----------
+async function boot() {
+  const { data: { session } } = await sb.auth.getSession();
+  $("#login").hidden = !!session; $("#app").hidden = !session;
+  if (session) loadList();
+}
+$("#loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  setMsg($("#loginMsg"), "Connexion…");
+  const { error } = await sb.auth.signInWithPassword({ email: $("#email").value.trim(), password: $("#pass").value });
+  if (error) return setMsg($("#loginMsg"), "E-mail ou mot de passe incorrect.", "err");
+  setMsg($("#loginMsg"), ""); boot();
+});
+$("#logout").addEventListener("click", async () => { await sb.auth.signOut(); boot(); });
+
+// ---------- Liste ----------
+async function loadList() {
+  const { data, error } = await sb.from("products").select("*").order("position").order("created_at", { ascending: false });
+  if (error) return setMsg($("#listMsg"), "Erreur : " + error.message, "err");
+  products = data; renderList();
+}
+function renderList() {
+  if (!products.length) { $("#list").innerHTML = '<p class="empty">Aucun produit. Ajoutez le premier !</p>'; return; }
+  $("#list").innerHTML = products.map((p, i) => `
+    <div class="item ${p.active ? "" : "off"}">
+      <img src="${esc(p.image_url || "/logo.png")}" alt="">
+      <div class="t"><b>${esc(p.name)}</b><span>${fmt(p.price)} · ${CAT[p.category] || ""}${p.active ? "" : " · masqué"}</span></div>
+      <div class="acts">
+        <button data-a="up" data-i="${i}" ${i === 0 ? "disabled" : ""} title="Monter">↑</button>
+        <button data-a="down" data-i="${i}" ${i === products.length - 1 ? "disabled" : ""} title="Descendre">↓</button>
+        <button data-a="toggle" data-i="${i}">${p.active ? "Masquer" : "Afficher"}</button>
+        <button data-a="edit" data-i="${i}">Modifier</button>
+        <button data-a="del" data-i="${i}" class="del">Supprimer</button>
+      </div>
+    </div>`).join("");
+}
+$("#list").addEventListener("click", async e => {
+  const b = e.target.closest("[data-a]"); if (!b) return;
+  const i = +b.dataset.i, p = products[i];
+  setMsg($("#listMsg"), "");
+  try {
+    if (b.dataset.a === "edit") return openForm(p);
+    if (b.dataset.a === "toggle") await upd(p.id, { active: !p.active });
+    if (b.dataset.a === "del") {
+      if (!confirm(`Supprimer « ${p.name} » ?`)) return;
+      const { error } = await sb.from("products").delete().eq("id", p.id); if (error) throw error;
+      const path = photoPath(p.image_url); if (path) await sb.storage.from("products").remove([path]);
+    }
+    if (b.dataset.a === "up" || b.dataset.a === "down") {
+      const j = b.dataset.a === "up" ? i - 1 : i + 1;
+      [products[i], products[j]] = [products[j], products[i]];
+      // renumérote l'ordre 0,1,2… et enregistre ce qui a changé
+      await Promise.all(products.map((q, k) => q.position === k ? null : upd(q.id, { position: k })));
+    }
+    await loadList();
+  } catch (err) { setMsg($("#listMsg"), "Erreur : " + err.message, "err"); }
+});
+async function upd(id, fields) { const { error } = await sb.from("products").update(fields).eq("id", id); if (error) throw error; }
+function photoPath(url) { const m = String(url || "").match(/\/object\/public\/products\/(.+)$/); return m ? decodeURIComponent(m[1]) : null; }
+
+// ---------- Formulaire ----------
+function openForm(p = null) {
+  editing = p; newFile = null; $("#file").value = "";
+  $("#formTitle").textContent = p ? "Modifier le produit" : "Nouveau produit";
+  $("#f-name").value = p?.name || "";
+  $("#f-cat").value = p?.category || "pc";
+  $("#f-price").value = p?.price ?? "";
+  $("#f-cond").value = p?.condition || "";
+  $("#f-specs").value = p?.specs || "";
+  $("#f-active").checked = p ? p.active : true;
+  $("#preview").src = p?.image_url || "/logo.png";
+  setMsg($("#formMsg"), "");
+  $("#ov").classList.add("open");
+}
+$("#addBtn").addEventListener("click", () => openForm());
+$("#closeForm").addEventListener("click", () => $("#ov").classList.remove("open"));
+$("#file").addEventListener("change", async e => {
+  const f = e.target.files[0]; if (!f) return;
+  setMsg($("#formMsg"), "Préparation de la photo…");
+  try { newFile = await compress(f); $("#preview").src = URL.createObjectURL(newFile); setMsg($("#formMsg"), ""); }
+  catch { newFile = null; setMsg($("#formMsg"), "Photo illisible, essayez une autre (JPG ou PNG).", "err"); }
+});
+
+// Réduit la photo à 1200 px max, JPEG ~80 % (léger pour WhatsApp et la 3G/4G)
+async function compress(file) {
+  const img = await createImageBitmap(file);
+  const s = Math.min(1, 1200 / Math.max(img.width, img.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+  const ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  return new Promise((ok, ko) => c.toBlob(b => b ? ok(b) : ko(), "image/jpeg", 0.8));
+}
+function slugify(s) {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60)
+    + "-" + Math.random().toString(36).slice(2, 6);
+}
+
+$("#form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("#saveBtn"); btn.disabled = true; setMsg($("#formMsg"), "Enregistrement…");
+  try {
+    const priceRaw = $("#f-price").value.trim();
+    const row = {
+      name: $("#f-name").value.trim(),
+      category: $("#f-cat").value,
+      price: priceRaw === "" ? null : Math.round(Number(priceRaw)),
+      condition: $("#f-cond").value.trim(),
+      specs: $("#f-specs").value.split("\n").map(x => x.trim()).filter(Boolean).join("\n"),
+      active: $("#f-active").checked,
+    };
+    const slug = editing?.slug || slugify(row.name);
+    if (newFile) {
+      const path = `${slug}-${Date.now()}.jpg`;
+      const { error } = await sb.storage.from("products").upload(path, newFile, { contentType: "image/jpeg", cacheControl: "31536000" });
+      if (error) throw error;
+      row.image_url = sb.storage.from("products").getPublicUrl(path).data.publicUrl;
+      const old = photoPath(editing?.image_url); if (old) sb.storage.from("products").remove([old]);
+    }
+    if (editing) {
+      await upd(editing.id, row);
+    } else {
+      row.slug = slug;
+      row.position = products.length ? Math.min(...products.map(p => p.position)) - 1 : 0; // en premier
+      const { error } = await sb.from("products").insert(row); if (error) throw error;
+    }
+    $("#ov").classList.remove("open");
+    setMsg($("#listMsg"), "✓ Produit enregistré", "ok");
+    await loadList();
+  } catch (err) {
+    setMsg($("#formMsg"), "Erreur : " + (err.message || err), "err");
+  } finally { btn.disabled = false; }
+});
+
+boot();
+</script>
+</body>
+</html>

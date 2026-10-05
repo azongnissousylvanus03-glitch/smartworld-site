@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SmartWorld — PC, téléphones & accessoires</title>
+<meta name="description" content="Choisissez vos produits et commandez directement sur WhatsApp.">
+<meta property="og:title" content="SmartWorld — PC, téléphones & accessoires">
+<meta property="og:description" content="Choisissez vos produits et commandez directement sur WhatsApp.">
+<meta property="og:image" content="/icon.png">
+<meta name="theme-color" content="#2f4aa0">
+<link rel="icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#2f4aa0; --blue:#2d6fd9; --cyan:#33b5e5; --ink:#141a33; --muted:#66708a;
+    --line:#e4e8f2; --bg:#f4f6fb; --card:#fff; --green:#1fa855; --green-d:#178a45;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{font-family:Poppins,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:110px}
+  button{font:inherit;cursor:pointer}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+  header{background:#fff;border-bottom:1px solid var(--line)}
+  .top{display:flex;align-items:center;gap:12px;padding:10px 0}
+  .top img{height:54px;width:auto}
+  .top .wa{margin-left:auto;font-size:13px;color:var(--green-d);text-decoration:none;font-weight:600;white-space:nowrap}
+
+  .hero{background:linear-gradient(120deg,var(--indigo),var(--blue) 60%,var(--cyan));color:#fff}
+  .hero .wrap{padding:22px 16px 26px}
+  .hero h1{margin:0 0 6px;font-size:clamp(22px,5.5vw,32px);line-height:1.2}
+  .hero p{margin:0;opacity:.92;font-size:15px}
+  .steps{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .steps span{background:rgba(255,255,255,.16);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:500}
+
+  .demo{background:#fff4d6;color:#7a5200;font-size:13px;padding:8px 16px;text-align:center}
+
+  .filters{display:flex;gap:8px;overflow-x:auto;padding:16px 0 4px;scrollbar-width:none}
+  .filters::-webkit-scrollbar{display:none}
+  .chip{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:500;white-space:nowrap}
+  .chip.on{background:var(--indigo);border-color:var(--indigo);color:#fff}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;padding:12px 0 24px}
+  .card{background:var(--card);border:2px solid transparent;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(20,30,70,.06);display:flex;flex-direction:column;transition:border-color .15s,transform .15s;position:relative}
+  .card.sel{border-color:var(--blue);box-shadow:0 6px 22px rgba(45,111,217,.22)}
+  .card .ph{aspect-ratio:4/3;background:#eef1f8;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .card .ph img{width:100%;height:100%;object-fit:cover}
+  .card .ph img.logo{width:45%;height:auto;object-fit:contain;opacity:.5}
+  .tick{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:none;align-items:center;justify-content:center;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+  .card.sel .tick{display:flex}
+  .card .bd{padding:14px 14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .badge{align-self:flex-start;font-size:12px;font-weight:600;color:var(--green-d);background:#e3f6ea;border-radius:999px;padding:3px 10px}
+  .card h3{margin:0;font-size:17px;line-height:1.3}
+  .specs{margin:0;padding:0;list-style:none;font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+  .specs li::before{content:"•";color:var(--blue);margin-right:6px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:6px}
+  .price{font-size:20px;font-weight:700;color:var(--indigo)}
+  .pick{border:2px solid var(--blue);background:#fff;color:var(--blue);border-radius:12px;padding:9px 14px;font-weight:600;font-size:14px;white-space:nowrap}
+  .card.sel .pick{background:var(--blue);color:#fff}
+
+  .empty{text-align:center;color:var(--muted);padding:40px 0}
+  .ask{background:#fff;border:1px dashed #c8d0e4;border-radius:18px;padding:18px;text-align:center;margin:4px 0 28px}
+  .ask p{margin:0 0 10px;color:var(--muted)}
+  .ask button{border:0;background:var(--indigo);color:#fff;border-radius:12px;padding:11px 18px;font-weight:600}
+
+  footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 16px 24px}
+
+  /* Barre du bas */
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(20,30,70,.08);padding:12px 16px calc(12px + env(safe-area-inset-bottom));z-index:10}
+  .bar .wrap{display:flex;align-items:center;gap:12px;padding:0}
+  .bar .info{flex:1;min-width:0;font-size:13px;color:var(--muted);line-height:1.3}
+  .bar .info b{display:block;color:var(--ink);font-size:16px}
+  .btn-wa{border:0;background:var(--green);color:#fff;border-radius:14px;padding:14px 18px;font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+  .btn-wa:active{background:var(--green-d)}
+  .btn-wa svg{width:20px;height:20px;flex:none}
+
+  /* Fenêtre message */
+  .ov{position:fixed;inset:0;background:rgba(10,15,35,.5);display:none;z-index:20;align-items:flex-end;justify-content:center}
+  .ov.open{display:flex}
+  .sheet{background:#fff;width:100%;max-width:560px;border-radius:22px 22px 0 0;max-height:92vh;overflow:auto;padding:18px 16px calc(18px + env(safe-area-inset-bottom));animation:up .22s ease-out}
+  @media(min-width:640px){.ov{align-items:center}.sheet{border-radius:22px}}
+  @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .sheet h2{margin:0 0 4px;font-size:20px}
+  .sheet .sub{margin:0 0 14px;color:var(--muted);font-size:14px}
+  .close{float:right;border:0;background:#eef1f8;width:36px;height:36px;border-radius:50%;font-size:18px}
+  .sel-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .si{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:12px;padding:8px}
+  .si img{width:48px;height:48px;border-radius:8px;object-fit:cover;background:#fff}
+  .si .t{flex:1;min-width:0;font-size:14px;font-weight:600}
+  .si .t small{display:block;color:var(--indigo);font-weight:600}
+  .si button{border:0;background:none;color:var(--muted);font-size:20px;padding:4px 8px}
+  .total{text-align:right;font-weight:700;margin:-4px 0 14px}
+  label{display:block;font-size:14px;font-weight:600;margin:12px 0 6px}
+  .quick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .quick button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 12px;font-size:13px;color:var(--ink)}
+  .quick button:active{background:#eef1f8}
+  textarea,input{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px;font:inherit;font-size:16px;color:var(--ink);outline:none}
+  textarea:focus,input:focus{border-color:var(--blue)}
+  textarea{min-height:96px;resize:vertical}
+  .sheet .btn-wa{width:100%;justify-content:center;margin-top:16px;font-size:16px;padding:16px}
+  .err{color:#c0392b;font-size:13px;margin-top:8px;display:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <img src="/logo.png" alt="SmartWorld">
+    <a class="wa" id="topWa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</header>
+<div id="demo" class="demo" hidden>Mode démo : produits d'exemple. Ils seront remplacés par les vôtres une fois Supabase configuré.</div>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Choisissez, on vous répond sur WhatsApp</h1>
+    <p id="slogan">PC, téléphones & accessoires</p>
+    <div class="steps"><span>1. Choisissez un ou plusieurs produits</span><span>2. Écrivez votre message</span><span>3. Envoyez sur WhatsApp</span></div>
+  </div>
+</section>
+
+<main class="wrap">
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+  <div class="ask">
+    <p>Vous ne trouvez pas ce que vous cherchez ? Dites-nous votre besoin et votre budget.</p>
+    <button id="askBtn">Poser une question</button>
+  </div>
+</main>
+<footer id="foot"></footer>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="info" id="barInfo"></div>
+    <button class="btn-wa" id="barBtn"></button>
+  </div>
+</div>
+
+<div class="ov" id="ov">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <button class="close" id="closeBtn" aria-label="Fermer">✕</button>
+    <h2>Votre message</h2>
+    <p class="sub">Il sera envoyé sur WhatsApp à SmartWorld.</p>
+    <div class="sel-list" id="selList"></div>
+    <div class="total" id="total"></div>
+    <label for="msg">Votre message <span style="font-weight:400;color:var(--muted)">(facultatif)</span></label>
+    <div class="quick" id="quick"></div>
+    <textarea id="msg" placeholder="Ex : J'ai 150 000 F, je le veux aujourd'hui. Livraison à Calavi possible ?"></textarea>
+    <label for="name">Votre nom <span style="font-weight:400;color:var(--muted)">(facultatif)</span></label>
+    <input id="name" autocomplete="name" placeholder="Ex : Koffi">
+    <div class="err" id="err">Choisissez un produit ou écrivez un message.</div>
+    <button class="btn-wa" id="sendBtn"></button>
+  </div>
+</div>
+
+<script type="module">
+import CONFIG from "./config.js";
+
+const WA_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>';
+const CATS = [["all","Tous"],["pc","Ordinateurs"],["telephone","Téléphones"],["accessoire","Accessoires"]];
+const DEMO = !CONFIG.SUPABASE_URL || CONFIG.SUPABASE_URL.includes("VOTRE");
+const DEMO_PRODUCTS = [
+  {id:"d1",slug:"hp-elitebook-840-g6",name:"HP EliteBook 840 G6",category:"pc",condition:"Importé – Très bon état",price:170000,image_url:"",specs:"Intel Core i7 – 8e génération\n8 Go RAM\nSSD 256 Go\nÉcran 14 pouces"},
+  {id:"d2",slug:"exemple-souris",name:"Souris sans fil (exemple)",category:"accessoire",condition:"Neuf",price:5000,image_url:"",specs:"Connexion USB sans fil\nSilencieuse"},
+  {id:"d3",slug:"exemple-telephone",name:"Téléphone (exemple)",category:"telephone",condition:"Neuf",price:95000,image_url:"",specs:"128 Go\n6 Go RAM\nDouble SIM"},
+];
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => n == null || n === "" ? "Prix sur demande" : new Intl.NumberFormat("fr-FR").format(n).replace(/\s/g, " ") + " F";
+const lines = s => String(s || "").split("\n").map(x => x.trim()).filter(Boolean);
+const phone = CONFIG.WHATSAPP.replace(/\D/g, "");
+const prettyPhone = "+" + phone.replace(/^(\d{3})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/, "$1 $2 $3 $4 $5 $6");
+
+let products = [], cat = "all";
+const selected = new Set();
+
+$("#slogan").textContent = CONFIG.SLOGAN;
+$("#topWa").href = "https://wa.me/" + phone;
+$("#topWa").textContent = prettyPhone;
+$("#foot").innerHTML = `© ${new Date().getFullYear()} ${esc(CONFIG.SHOP_NAME)} · ${esc(CONFIG.SLOGAN)} · WhatsApp ${esc(prettyPhone)}`;
+$("#sendBtn").innerHTML = WA_ICON + "Envoyer sur WhatsApp";
+
+async function load() {
+  if (DEMO) { $("#demo").hidden = false; return DEMO_PRODUCTS; }
+  const url = `${CONFIG.SUPABASE_URL}/rest/v1/products?select=*&active=eq.true&order=position.asc,created_at.desc`;
+  const r = await fetch(url, { headers: { apikey: CONFIG.SUPABASE_ANON_KEY } });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+function renderFilters() {
+  const present = new Set(products.map(p => p.category));
+  $("#filters").innerHTML = CATS.filter(([k]) => k === "all" || present.has(k))
+    .map(([k, l]) => `<button class="chip ${k === cat ? "on" : ""}" data-cat="${k}">${l}</button>`).join("");
+}
+
+function renderGrid() {
+  const list = products.filter(p => cat === "all" || p.category === cat);
+  if (!list.length) { $("#grid").innerHTML = `<p class="empty">Aucun produit pour le moment.</p>`; return; }
+  $("#grid").innerHTML = list.map(p => `
+    <article class="card ${selected.has(p.id) ? "sel" : ""}" data-id="${esc(p.id)}" id="p-${esc(p.slug)}">
+      <div class="ph">${p.image_url ? `<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">` : `<img class="logo" src="/logo.png" alt="">`}</div>
+      <div class="tick">✓</div>
+      <div class="bd">
+        ${p.condition ? `<span class="badge">${esc(p.condition)}</span>` : ""}
+        <h3>${esc(p.name)}</h3>
+        <ul class="specs">${lines(p.specs).map(l => `<li>${esc(l)}</li>`).join("")}</ul>
+        <div class="row"><span class="price">${fmt(p.price)}</span>
+          <button class="pick" type="button">${selected.has(p.id) ? "✓ Choisi" : "Choisir"}</button></div>
+      </div>
+    </article>`).join("");
+}
+
+function chosen() { return products.filter(p => selected.has(p.id)); }
+function sum(list) { return list.reduce((a, p) => a + (Number(p.price) || 0), 0); }
+
+function renderBar() {
+  const list = chosen();
+  if (!list.length) {
+    $("#barInfo").innerHTML = `<b>Touchez un produit</b>pour le choisir`;
+    $("#barBtn").innerHTML = WA_ICON + "Nous écrire";
+  } else {
+    $("#barInfo").innerHTML = `<b>${list.length} produit${list.length > 1 ? "s" : ""} choisi${list.length > 1 ? "s" : ""}</b>${fmt(sum(list))}`;
+    $("#barBtn").innerHTML = WA_ICON + "Commander";
+  }
+}
+
+function renderSheet() {
+  const list = chosen();
+  $("#selList").innerHTML = list.map(p => `
+    <div class="si"><img src="${esc(p.image_url || "/logo.png")}" alt="">
+      <div class="t">${esc(p.name)}<small>${fmt(p.price)}</small></div>
+      <button data-rm="${esc(p.id)}" aria-label="Retirer">✕</button></div>`).join("");
+  $("#total").textContent = list.length > 1 ? "Total : " + fmt(sum(list)) : "";
+  const q = list.length
+    ? ["Je le veux maintenant", "Est-ce toujours disponible ?", "Quel est votre dernier prix ?", "Livraison possible ?", "Mon budget est de "]
+    : ["J'ai besoin d'un PC", "J'ai besoin d'un téléphone", "Mon budget est de ", "Livraison possible ?"];
+  $("#quick").innerHTML = q.map(t => `<button type="button" data-q="${esc(t)}">${esc(t.trim())}${t.endsWith(" ") ? "…" : ""}</button>`).join("");
+}
+
+function toggle(id) {
+  selected.has(id) ? selected.delete(id) : selected.add(id);
+  renderGrid(); renderBar();
+}
+
+function openSheet() { renderSheet(); $("#err").style.display = "none"; $("#ov").classList.add("open"); }
+function closeSheet() { $("#ov").classList.remove("open"); }
+
+function buildMessage() {
+  const list = chosen(), msg = $("#msg").value.trim(), name = $("#name").value.trim();
+  const out = [`Bonjour ${CONFIG.SHOP_NAME} 👋`];
+  if (list.length) {
+    out.push("", list.length > 1 ? "Je suis intéressé(e) par ces produits :" : "Je suis intéressé(e) par ce produit :");
+    list.forEach(p => { out.push(`• ${p.name} — ${fmt(p.price)}`, `  ${location.origin}/p/${p.slug}`); });
+    if (list.length > 1) out.push(`Total : ${fmt(sum(list))}`);
+  }
+  if (msg) out.push("", "💬 " + msg);
+  if (name) out.push("", "Nom : " + name);
+  return out.join("\n");
+}
+
+function send() {
+  if (!chosen().length && !$("#msg").value.trim()) { $("#err").style.display = "block"; $("#msg").focus(); return; }
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(buildMessage())}`, "_blank");
+}
+
+// Événements
+$("#filters").addEventListener("click", e => { const b = e.target.closest("[data-cat]"); if (!b) return; cat = b.dataset.cat; renderFilters(); renderGrid(); });
+$("#grid").addEventListener("click", e => { const c = e.target.closest(".card"); if (c) toggle(c.dataset.id); });
+$("#barBtn").addEventListener("click", openSheet);
+$("#askBtn").addEventListener("click", openSheet);
+$("#closeBtn").addEventListener("click", closeSheet);
+$("#ov").addEventListener("click", e => { if (e.target.id === "ov") closeSheet(); });
+$("#selList").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (!b) return; selected.delete(b.dataset.rm); renderSheet(); renderGrid(); renderBar(); });
+$("#quick").addEventListener("click", e => {
+  const b = e.target.closest("[data-q]"); if (!b) return;
+  const t = $("#msg"), v = t.value.trim(), q = b.dataset.q;
+  t.value = (v ? v + (/[.?!]$/.test(v) ? " " : ". ") : "") + q;
+  t.focus(); t.setSelectionRange(t.value.length, t.value.length);
+});
+$("#sendBtn").addEventListener("click", send);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+// Démarrage
+try { products = await load(); }
+catch (e) { console.error(e); $("#grid").innerHTML = `<p class="empty">Impossible de charger les produits. Écrivez-nous directement sur WhatsApp.</p>`; }
+// Produit présélectionné via le lien /?p=slug (pubs, liens partagés)
+const pre = new URLSearchParams(location.search).get("p");
+const hit = products.find(p => p.slug === pre);
+if (hit) selected.add(hit.id);
+renderFilters(); if (products.length) renderGrid(); renderBar();
+if (hit) document.getElementById("p-" + hit.slug)?.scrollIntoView({ behavior: "smooth", block: "center" });
+</script>
+</body>
+</html>
